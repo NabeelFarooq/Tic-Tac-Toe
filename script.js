@@ -1,13 +1,15 @@
 "use strict";
 
-const Player = (sign) => {
+const Player = (sign,name) => {
     this.sign = sign;
-
+    this.name = name;
     const getSign = () => {
         return sign;
     };
-
-    return { getSign };
+    const getName = () => {
+        return name;
+    };
+    return { getSign , getName};
 };
 const gameBoard = (() => {
     const board = ["", "", "", "", "", "", "", "", ""];
@@ -46,7 +48,7 @@ const displayController = (() => {
         gameBoard.reset();
         gameController.reset();
         updateGameboard();
-        setMessageElement("Player X's turn");
+        setMessageElement(`Player ${gameController.getPlayer1()}'s turn`);
     });
 
     const updateGameboard = () => {
@@ -70,8 +72,10 @@ const displayController = (() => {
 })();
 
 const gameController = (() => {
-    const playerX = Player("X");
-    const playerO = Player("O");
+    const p1 = document.getElementById("player-1");
+    const p2 = document.getElementById("player-2");
+    const playerX = Player("X",getPlayer1());
+    const playerO = Player("O",getPlayer2());
     let round = 1;
     let isOver = false;
 
@@ -88,13 +92,15 @@ const gameController = (() => {
             return;
         }
         round++;
-        displayController.setMessageElement(`Player ${getCurrentPlayerSign()}'s turn`);
+        displayController.setMessageElement(`Player ${getCurrentPlayerName}'s turn`);
     };
 
     const getCurrentPlayerSign = () => {
         return round % 2 === 1 ? playerX.getSign() : playerO.getSign();
     };
-    
+    const getCurrentPlayerName = () => {
+        return round % 2 === 1 ? playerX.getName() : playerO.getName();
+    };
     const checkWinner = (fieldIndex) => {
         const winConditions = [
             [0, 1, 2],
@@ -124,6 +130,12 @@ const gameController = (() => {
         isOver = false;
     };
 
-    return {playRound, getIsOver, reset}
+    const getPlayer1 = () => {
+        return p1.value;
+    };
+    const getPlayer2 = () => {
+        return p2.value;
+    };
+    return {playRound, getIsOver, reset, getPlayer1, getPlayer2}
 })();
 
